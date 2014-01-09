@@ -3,7 +3,7 @@ cgminer-keep-alive
 
 Powershell script (with accompanying batch file) that parses cgminer's log and restarts the application when it hangs/crashes. It will try to kill all cgminer processes and spawn a new instance whenever it detects a "bad" word (customizable, see <a href="#configuration">Configuration</a>). If it fails to do so within 10 attempts it can optionally restart the server (also configurable).
 
-Support to handle multiple instances of cgminer is planned.
+Support to handle multiple instances of cgminer is planned but as of now it can only handle 1 process at the time.
 
 Output
 ==================
@@ -95,10 +95,12 @@ If(killcgminer) { #if killcgminer was successful then start cgminer again
 $badwords = @('SICK!','DEAD','killing');
 ```
 
-Just add more words to the array. Example
+Just add more words to the array. The log checking is caps insensitive. Note that the word can not be a string (contain spaces) as the script reads the log one word at a time (and a word can not contain a space). So for example if you want to check for "HW error" I suggest you just use "error". Support for strings is a planned feature.
+
+Example
 
 ```powershell
-$badwords = @('SICK!','DEAD','killing','Failure','Error','AnotherWord');
+$badwords = @('SICK!','DEAD','killing','Failure','Error','Another','Set','Of','Words');
 ```
 
 Run cgminer-keep-alive
@@ -128,11 +130,13 @@ Known issues
 ==================
 * Double output produced when a new cgminer instance is spawned and the scripts switches to the new log file
 * The debug mode's log outputs to the current directory, it must be writeable or multiple error messages will be thrown.
+* WerFault.exe and cmd.exe sometimes don't close when cgminer is killed
 
 Planned features
 ==================
 
 * Support for multiple cgminer instances
+* Support for checking against strings instead of words
 * Optionally send an email when cgminer crasches.
 * Save program log to a file with configurable path (normal and debug mode)
 * Better-looking output

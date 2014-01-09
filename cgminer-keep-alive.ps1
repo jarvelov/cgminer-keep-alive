@@ -7,6 +7,8 @@
 .PARAMETER logfile
     The path to cgminers logfile. Only use this parameter when cgminer is already running.
     If you omit the parameter cgminer-keep-alive will start cgminer for you.
+.PARAMETER debug
+    Enabled debug output. Note: debug also writes all cgminer-keep-alive output to a file in the current directory.
 .EXAMPLE
     C:\PS> .\cgminer-keep-alive.ps1
     Running the script without the logfile parameter will make cgminer-keep-alive start cgminer,
@@ -18,6 +20,7 @@
 .NOTES
     Author: dbsnurr
     Date:   2014-01-08
+    URL: https://github.com/dbsnurr/cgminer-keep-alive
 #>
 param (
     [string]$logfile,
@@ -151,6 +154,7 @@ while ($j -eq 0) { #initializing the infinte loop
         } else {
             logdebug "No instances of cgminer was found. Starting up cgminer now."
             $logfile = startcgminer
+            log "New cgminer process started, changing to new logfile $logfile"
         }
     }
     

@@ -3,7 +3,7 @@ cgminer-keep-alive
 
 Powershell script (with accompanying batch file) that parses cgminer's log and restarts the application when it hangs/crashes. It will try to kill all cgminer processes and spawn a new instance whenever it detects a "bad" word (customizable, see <a href="#configuration">Configuration</a>). If it fails to do so within 10 attempts it can optionally restart the server (also configurable).
 
-Support to handle multiple instances of cgminer is planned but as of now it can only handle 1 process at the time.
+Support to handle multiple instances of cgminer is planned but as of now it can only handle 1 process at a time.
 
 Output
 ==================
@@ -14,7 +14,7 @@ cgminer-keep-alive produces very little output. The default settings only output
 
 If you're having trouble getting it to work you could try the debug mode to see what the problem is. Enable the debug mode by adding `-debug $true` as a parameter to cgminer-keep-alive.ps1.
 
-cgminer-keep-alive creates new logfile with a datetime format (yyyy-MM-dd_HH-mm)
+cgminer-keep-alive creates new logfiles with a datetime format (yyyy-MM-dd_HH-mm)
 
 Installation
 ==================
@@ -23,7 +23,7 @@ Prerequisites: Powershell 2.0+<br>
 Windows XP+<br>
 cgminer (Testing various versions, but anything above 3.5 should generally work)<br>
 
-Download the master.zip file and extract the contents to where cgminer.exe is located (in my case it's c:\cgminer). If you want to keep the files somewhere you have to edit cgminer-keep-alive.ps1 as described in <a href="#configuration">Configuration</a>.
+Download the master.zip file and extract the contents to where cgminer.exe is located (in my case it's c:\cgminer). If you want to keep the files somewhere you have to edit cgminer-keep-alive.ps1 as described in <a href="#configuration">configuration</a>.
 
 Configuration
 ==================
@@ -77,7 +77,7 @@ Function startcgminer() {
 }
 ```
 
-Although this requires for cgminer-keep-alive.ps1 to be in the same folder as cgminer.exe, or that they are available in your PATH.
+Although this requires for cgminer-keep-alive.ps1 to be in the same folder as cgminer.exe, or that the config is available in your PATH.
 
 <b>Restart server if cgminer process can not be killed</b>
 Sometimes cgminer hangs and can not be killed other than by restarting the computer. Just uncomment  ```Restart-Computer``` in the following section:
@@ -114,15 +114,13 @@ Running cgminer-keep-alive is as simple as running:
 .\cgminer-keep-alive.ps1
 ```
 
-cgminer-keep-alive will check for existing cgminer instances when it starts and spawn a new instance if it can't find any. Make sure that you have <b>closed all instances of cgminer before starting cgminer-keep-alive</b>, otherwise the script will exit.
+cgminer-keep-alive will check for existing cgminer instances when it starts and spawn a new instance if it can't find one. Make sure that you have <b>closed all instances of cgminer before starting cgminer-keep-alive</b>, otherwise the script will exit.
 
 If you already have an instance of cgminer running just point cgminer-keep-alive to cgminer's logfile and it will start monitoring.
 
 ```
 .\cgminer-keep-alive.ps1 -logfile C:\cgminer\logs\cgminer.log
 ```
-
-If you omit the ```-logfile C:\path\to\cgminer.log``` parameter cgminer-keep-alive will try to spawn a new instance of cgminer if no existing cgminer processes are running.
 
 <b>Start cgminer-keep-alive on system startup</b>
 
@@ -140,4 +138,4 @@ Planned features
 * Optionally send an email when cgminer crasches.
 * Save program log to a file with configurable path (normal and debug mode)
 * Better-looking output
-* Full support to keep cgminer-keep-alive and cgminer in different folders when using without batch file
+* Fully support having cgminer-keep-alive and cgminer in different folders when running without a batch file

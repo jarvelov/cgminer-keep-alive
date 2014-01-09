@@ -163,7 +163,7 @@ while ($j -eq 0) { #initializing the infinte loop
                     log "New cgminer process started, changing to new logfile $logfile"
                 } else {
                     log "Could not restart cgminer. Server in need of reboot..."
-                    #Restart-Computer -Force #the zombie processes could not be killed, restarting server
+                    #Restart-Computer -Force #the processes could not be killed, restarting server
                 }
             }
         }

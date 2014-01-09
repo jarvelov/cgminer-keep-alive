@@ -14,6 +14,8 @@ cgminer-keep-alive produces very little output. The default settings only output
 
 If you're having trouble getting it to work you could try the debug mode to see what the problem is. Enable the debug mode by adding `-debug $true` as a parameter to cgminer-keep-alive.ps1.
 
+cgminer-keep-alive creates new logfile with a datetime format (yyyy-MM-dd_HH-mm)
+
 Installation
 ==================
 
@@ -128,13 +130,11 @@ The easiest way to start cgminer-keep-alive with Windows is just to create a sho
 
 Known issues
 ==================
-* Double output produced when a new cgminer instance is spawned and the scripts switches to the new log file
 * The debug mode's log outputs to the current directory, it must be writeable or multiple error messages will be thrown.
-* WerFault.exe and cmd.exe sometimes don't close when cgminer is killed
+* WerFault.exe and cmd.exe sometimes don't close when cgminer is killed (or close too quickly and an error that the process couldn't be found is thrown) - This can be ignored as the script will catch them next time around.
 
 Planned features
 ==================
-
 * Support for multiple cgminer instances
 * Support for checking against strings instead of words
 * Optionally send an email when cgminer crasches.

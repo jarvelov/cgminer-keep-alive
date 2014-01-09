@@ -21,7 +21,7 @@ Prerequisites: Powershell 2.0+<br>
 Windows XP+<br>
 cgminer (Testing various versions, but anything above 3.5 should generally work)<br>
 
-Download the master.zip file and extract the contents to where cgminer.exe is located (in my case it's c:\cgminer). If you want to keep the files somewhere you have to edit cgminer-keep-alive.ps1 as described in <b><a href="#configuration">Configuration</a><b>.
+Download the master.zip file and extract the contents to where cgminer.exe is located (in my case it's c:\cgminer). If you want to keep the files somewhere you have to edit cgminer-keep-alive.ps1 as described in <a href="#configuration">Configuration</a>.
 
 Configuration
 ==================

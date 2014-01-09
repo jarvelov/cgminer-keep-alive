@@ -54,7 +54,7 @@ Function killprocess($process) {
 Function killcgminer($attempt = 0) {
     $max = 10
     $wait = 3
-    $processes = @('cgminer','WerFault','cmd') #processes will be killed in order from left to right
+    $processes = @('cgminer','WerFault') #processes will be killed in order from left to right
 
     #only retry if less than $max attempts to kill the process have been made 
     If($attempt -lt $max) {

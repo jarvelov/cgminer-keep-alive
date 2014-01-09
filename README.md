@@ -42,7 +42,7 @@ Add your pool's configuration and other cgminer parameters. Make sure to leave `
 
 <b>cgminer-keep-alive.ps1</b>
 
-If you didn't keep the cgminer-keep-alive files within the same folder as cgminer.exe you have to edit the path manually.
+If you didn't want to keep cgminer-keep-alive in C:\cgminer you have to edit the path manually.
 
 ```powershell
 Function startcgminer() {
@@ -77,7 +77,7 @@ Function startcgminer() {
 }
 ```
 
-Although this requires for cgminer-keep-alive.ps1 to be in the same folder as cgminer.exe, or that the config is available in your PATH.
+Although can be problematic if cgminer-keep-alive.ps1 isn't in the same folder as cgminer.exe.
 
 <b>Restart server if cgminer process can not be killed</b>
 Sometimes cgminer hangs and can not be killed other than by restarting the computer. Just uncomment  ```Restart-Computer``` in the following section:

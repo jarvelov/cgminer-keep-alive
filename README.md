@@ -1,7 +1,7 @@
 cgminer-keep-alive
 ==================
 
-Powershell script (with accompanying batch file) that parses cgminer's log and restarts the application when it hangs/crashes. It will try to kill all cgminer processes and spawn a new instance whenever it detects a bad word (customizable, see <a href="#configuration">Configuration</a>). If it fails to do so within 10 attempts it can optionally restart the server.
+Powershell script (with accompanying batch file) that parses cgminer's log and restarts the application when it hangs/crashes. It will try to kill all cgminer processes and spawn a new instance whenever it detects a "bad" word (customizable, see <a href="#configuration">Configuration</a>). If it fails to do so within 10 attempts it can optionally restart the server (also configurable).
 
 Support to handle multiple instances of cgminer is planned.
 
@@ -29,12 +29,12 @@ Configuration
 Before you start you have to set Powershell's execution policy, otherwise it will refuse to run the script. Execute the following command in an administrative Powershell shell.
 
 ```powershell
-Set-ExecutionPolic Unrestricted
+Set-ExecutionPolicy Unrestricted
 ```
 
 Close all open Powershell shells and open them again so the new execution policy is loaded.
 
-<b>startmine.bat</b>
+<b>Using startmine.bat</b>
 
 Add your pool's configuration and other cgminer parameters. Make sure to leave `>2>%logoutput%` in, otherwise no log is created and cgminer-keep-alive won't work. If you don't want to keep the files together with you cgminer files you can change `cd %~dp0` to `cd (wherever cgminer.exe is)` (e.g. C:\some\other\path).
 
@@ -52,6 +52,8 @@ Function startcgminer() {
 ```
 
 The $process variable is the path to startmine.bat and $basepath is to the directory where the logs will be placed.
+
+<b>Run without batch file</b>
 You can completely omit the batch file if you want, for example:
 
 ```powershell
@@ -68,12 +70,12 @@ or if you have configured a cgminer.conf you could just run
 Function startcgminer() {
     $process = "C:\path\to\cgminer.exe"
     ...
-    $arguments = "2>$basepath\$datetime.log"
+    $arguments = "--config C:\path\to\cgminer.conf 2>$basepath\$datetime.log"
     ...
 }
 ```
 
-Although this requires for cgminer-keep-alive.ps1 to be in the same folder as cgminer.exe and cgminer.conf, or that they are available in your PATH.
+Although this requires for cgminer-keep-alive.ps1 to be in the same folder as cgminer.exe, or that they are available in your PATH.
 
 <b>Restart server if cgminer process can not be killed</b>
 Sometimes cgminer hangs and can not be killed other than by restarting the computer. Just uncomment  ```Restart-Computer``` in the following section:
@@ -134,3 +136,4 @@ Planned features
 * Optionally send an email when cgminer crasches.
 * Save program log to a file with configurable path (normal and debug mode)
 * Better-looking output
+* Full support to keep cgminer-keep-alive and cgminer in different folders

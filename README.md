@@ -1,7 +1,7 @@
 cgminer-keep-alive
 ==================
 
-Powershell script (with accompanying batch file) that parses cgminer's log and restarts the application when it hangs/crashes.
+Powershell script (with accompanying batch file) that parses cgminer's log and restarts the application when it hangs/crashes. It will try to kill all cgminer processes whenever it detects a bad word (customizable, see <a href="#configuration">Configuration</a>). If it fails to do so within 10 attempts it can optionally restart the server.
 
 Output
 ==================
@@ -23,6 +23,14 @@ Download the master.zip file and extract the contents to where cgminer.exe is lo
 
 Configuration
 ==================
+
+Before you start you have to set Powershell's execution policy, otherwise it will refuse to run the script. Execute the following command in an administrative Powershell shell.
+
+```powershell
+Set-ExecutionPolic Unrestricted
+```
+
+Close all open Powershell shells and open them again so the new execution policy is loaded.
 
 <b>startmine.bat</b>
 
@@ -64,3 +72,51 @@ Function startcgminer() {
 ```
 
 Although this requires for cgminer-keep-alive.ps1 to be in the same folder as cgminer.exe and cgminer.conf, or that they are available in your PATH.
+
+<b>Restart server if cgminer process can not be killed</b>
+Sometimes cgminer hangs and can not be killed other than by restarting the computer. Just uncomment  ```Restart-Computer``` in the following section:
+
+```powershell
+If(killcgminer) { #if killcgminer was successful then start cgminer again
+    $logfile = startcgminer
+        log "New cgminer process started, changing to new logfile $logfile"
+    } else {
+        log "Could not restart cgminer. Server in need of reboot..."
+        #Restart-Computer -Force #the zombie processes could not be killed, restarting server
+}
+```
+
+
+Run cgminer-keep-alive
+==================
+
+Running cgminer-keep-alive is as simple as running:
+
+```powershell
+.\cgminer-keep-alive.ps1
+````
+
+cgminer-keep-alive will check for existing cgminer instances when it starts and spawn a new instance if it can't find any. Make sure that you have <b>closed all instances of cgminer before starting cgminer-keep-alive</b>, otherwise the script will exit.
+
+If you already have an instance of cgminer running just point cgminer-keep-alive to cgminer's logfile and it will start monitoring.
+
+```powershell
+.\cgminer-keep-alive.ps1 -logfile C:\cgminer\logs\cgminer.log
+```
+
+If you omit the ```-logfile C:\path\to\cgminer.log``` parameter cgminer-keep-alive will try to spawn a new instance of cgminer if no existing cgminer processes are running.
+
+<b>Start cgminer-keep-alive on system startup</b>
+
+The easiest way to start cgminer-keep-alive with Windows is just to create a shortcut to cgminer-keep-alive.ps1 and place it in your Startup folder which is located at: C:\Users\%username%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+Known issues
+==================
+Double output when a new cgminer instance is spawned and the scripts switches to the new log file
+
+
+Planned features
+==================
+
+* Support for multiple cgminer instances
+* Ability to an send email when cgminer crasches.

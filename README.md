@@ -53,7 +53,7 @@ Function startcgminer() {
 
 The $process variable is the path to startmine.bat and $basepath is to the directory where the logs will be placed.
 
-<b>Run without batch file</b>
+<b>Run without batch file</b><br>
 You can completely omit the batch file if you want, for example:
 
 ```powershell
@@ -86,7 +86,7 @@ If(killcgminer) { #if killcgminer was successful then start cgminer again
         log "New cgminer process started, changing to new logfile $logfile"
     } else {
         log "Could not restart cgminer. Server in need of reboot..."
-        #Restart-Computer -Force #the zombie processes could not be killed, restarting server
+        #Restart-Computer -Force #the processes could not be killed, restarting server
 }
 ```
 
@@ -126,7 +126,7 @@ The easiest way to start cgminer-keep-alive with Windows is just to create a sho
 
 Known issues
 ==================
-* Double output when a new cgminer instance is spawned and the scripts switches to the new log file
+* Double output produced when a new cgminer instance is spawned and the scripts switches to the new log file
 * The debug mode's log outputs to the current directory, it must be writeable or multiple error messages will be thrown.
 
 Planned features
@@ -136,4 +136,4 @@ Planned features
 * Optionally send an email when cgminer crasches.
 * Save program log to a file with configurable path (normal and debug mode)
 * Better-looking output
-* Full support to keep cgminer-keep-alive and cgminer in different folders
+* Full support to keep cgminer-keep-alive and cgminer in different folders when using without batch file

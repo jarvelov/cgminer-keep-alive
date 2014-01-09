@@ -25,7 +25,8 @@ param (
 )
 
 Function log($output) {
-    Write-Host $output
+    $timestamp = (Get-Date -Format "yyyy-MM-dd_HH:mm:ss") 
+    Write-Host "$timestamp $output"
 }
 
 Function logdebug($output) {

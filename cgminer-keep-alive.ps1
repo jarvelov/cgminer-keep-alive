@@ -40,7 +40,7 @@ Function logdebug($output) {
 Function processinstances($process) {
     $numinst = (Get-Process $process -ErrorAction SilentlyContinue | Group-Object -Property $process).count
     logdebug "$numinst instance(s) of process $process is running"
-    return $numist
+    return $numinst
 }
 
 Function killprocess($process) {
@@ -103,12 +103,13 @@ Function startcgminer() {
 }
 
 #check if cgminer is already running
-Function cgminernotrunning() { 
+Function cgmineralive() { 
     $numcgminer = processinstances "cgminer"
-    If($numcgminer -le 0) {
-        logdebug "Looks like cgminer isn't running"
+    If($numcgminer -ge 1) {
+        logdebug "Looks like cgminer is running"
         return $true
     } else { 
+        logdebug "Looks like cgminer isn't running"
         return $false
     }
 }
@@ -118,10 +119,10 @@ $wait = 30
 $j = 0
 $i = 0
 
-$status = cgminernotrunning
-If(($logfile) -And (!($status))) {
+$status = cgmineralive
+If(($logfile) -And ($status)) {
     logdebug "Path to an existing log was passed as an argument and a cgminer process was found."
-} elseif (!($logfile) -And ($status)) {
+} elseif (!($logfile) -And (!($status))) {
     $logfile = startcgminer
     logdebug "cgminer was not running but is now started since no logfile argument was passed to script (possibly because the user omitted it or the program crashed)"
 } else {
@@ -135,6 +136,7 @@ log "Add the argument `"-debug $true`" if you want to show debug output."
 while ($j -eq 0) { #initializing the infinte loop
     $i+=1
     logdebug "$i cycles since start"
+    logdebug "Parsing log $logfile"
     Sleep $wait #wait between each cycle
 
     Try {
@@ -143,17 +145,17 @@ while ($j -eq 0) { #initializing the infinte loop
         log "Can not read contents of file $logfile! Check the path and permissions!"
         Break
     } Finally {
-        if(cgminernotrunning) {
+        $isalive = cgmineralive
+        if($isalive) {
+            logdebug "cgminer is currently running"
+        } else {
             logdebug "No instances of cgminer was found. Starting up cgminer now."
             $logfile = startcgminer
-        } else {
-            logdebug "cgminer is currently running"
         }
     }
     
     #Read the logfile and parse the content
     Foreach ($row in $content) {
-        logdebug "Parsing log $logfile"
         $rowwords = $row -Split "\s+"
         Foreach ($badword in $rowwords) {#checking if a word in the log matches one in the $badwords array
             If($badwords -contains $badword) { 
@@ -162,7 +164,7 @@ while ($j -eq 0) { #initializing the infinte loop
                     $logfile = startcgminer
                     log "New cgminer process started, changing to new logfile $logfile"
                 } else {
-                    log "Could not restart cgminer. Server in need of reboot..."
+                    log "Could not restart cgminer. Server in need of reboot..." 
                     #Restart-Computer -Force #the processes could not be killed, restarting server
                 }
             }

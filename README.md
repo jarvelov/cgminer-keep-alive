@@ -104,15 +104,15 @@ Run cgminer-keep-alive
 
 Running cgminer-keep-alive is as simple as running:
 
-```powershell
+```
 .\cgminer-keep-alive.ps1
-````
+```
 
 cgminer-keep-alive will check for existing cgminer instances when it starts and spawn a new instance if it can't find any. Make sure that you have <b>closed all instances of cgminer before starting cgminer-keep-alive</b>, otherwise the script will exit.
 
 If you already have an instance of cgminer running just point cgminer-keep-alive to cgminer's logfile and it will start monitoring.
 
-```powershell
+```
 .\cgminer-keep-alive.ps1 -logfile C:\cgminer\logs\cgminer.log
 ```
 
@@ -125,10 +125,12 @@ The easiest way to start cgminer-keep-alive with Windows is just to create a sho
 Known issues
 ==================
 Double output when a new cgminer instance is spawned and the scripts switches to the new log file
-
+The debug mode's log outputs to the current directory, it must be writeable or multiple error messages will be thrown.
 
 Planned features
 ==================
 
 * Support for multiple cgminer instances
-* Ability to an send email when cgminer crasches.
+* Optionally send an email when cgminer crasches.
+* Save program log to a file with configurable path (normal and debug mode)
+* Better-looking output

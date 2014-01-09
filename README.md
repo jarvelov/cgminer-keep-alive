@@ -1,7 +1,9 @@
 cgminer-keep-alive
 ==================
 
-Powershell script (with accompanying batch file) that parses cgminer's log and restarts the application when it hangs/crashes. It will try to kill all cgminer processes whenever it detects a bad word (customizable, see <a href="#configuration">Configuration</a>). If it fails to do so within 10 attempts it can optionally restart the server.
+Powershell script (with accompanying batch file) that parses cgminer's log and restarts the application when it hangs/crashes. It will try to kill all cgminer processes and spawn a new instance whenever it detects a bad word (customizable, see <a href="#configuration">Configuration</a>). If it fails to do so within 10 attempts it can optionally restart the server.
+
+Support to handle multiple instances of cgminer is planned.
 
 Output
 ==================
@@ -86,6 +88,16 @@ If(killcgminer) { #if killcgminer was successful then start cgminer again
 }
 ```
 
+<b>Configure "bad" words </b>
+```powershell
+$badwords = @('SICK!','DEAD','killing');
+```
+
+Just add more words to the array. Example
+
+```powershell
+$badwords = @('SICK!','DEAD','killing','Failure','Error','AnotherWord');
+```
 
 Run cgminer-keep-alive
 ==================

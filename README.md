@@ -126,8 +126,8 @@ The easiest way to start cgminer-keep-alive with Windows is just to create a sho
 
 Known issues
 ==================
-Double output when a new cgminer instance is spawned and the scripts switches to the new log file
-The debug mode's log outputs to the current directory, it must be writeable or multiple error messages will be thrown.
+* Double output when a new cgminer instance is spawned and the scripts switches to the new log file
+* The debug mode's log outputs to the current directory, it must be writeable or multiple error messages will be thrown.
 
 Planned features
 ==================

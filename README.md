@@ -40,7 +40,7 @@ Set-ExecutionPolicy Unrestricted
 
 Close all open Powershell shells and open them again so the new execution policy is loaded.
 
-Option 2
+Option 2 - Administrative permissions NOT required
 ------------------
 
 If you can't set the execution policy or simply don't want to you can set it at runtime if you launch powershell with ```-ExecutionPolicy Bypass```

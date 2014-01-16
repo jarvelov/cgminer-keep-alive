@@ -28,13 +28,31 @@ Download the master.zip file and extract the contents to where cgminer.exe is lo
 Configuration
 ==================
 
-Before you start you have to set Powershell's execution policy, otherwise it will refuse to run the script. Execute the following command in an administrative Powershell shell.
+Before you start you have to set Powershell's execution policy, otherwise it will refuse to run the script.
+
+Option 1 - Administrative permissions required
+------------------
+Execute the following command in an administrative Powershell shell.
 
 ```powershell
 Set-ExecutionPolicy Unrestricted
 ```
 
 Close all open Powershell shells and open them again so the new execution policy is loaded.
+
+Option 2
+------------------
+
+If you can't set the execution policy or simply don't want to you can set it at runtime if you launch powershell with ```-ExecutionPolicy Bypass```
+
+You can create a shortcut which does this:
+
+```
+Target: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy ByPass -File C:\cgminer\cgminer-keep-alive.ps1
+Start in: C:\cgminer
+```
+
+Then all you have to do is launch that shortcut!
 
 <b>Using startmine.bat</b>
 

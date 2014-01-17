@@ -54,11 +54,13 @@ Start in: C:\cgminer
 
 Then all you have to do is launch that shortcut!
 
-<b>Using startmine.bat</b>
+Using startmine.bat
+------------------
 
 Add your pool's configuration and other cgminer parameters. Make sure to leave `>2>%logoutput%` in, otherwise no log is created and cgminer-keep-alive won't work. If you don't want to keep the files together with you cgminer files you can change `cd %~dp0` to `cd (wherever cgminer.exe is)` (e.g. C:\some\other\path).
 
-<b>cgminer-keep-alive.ps1</b>
+cgminer-keep-alive.ps1
+------------------
 
 If you didn't want to keep cgminer-keep-alive in C:\cgminer you have to edit the path manually.
 
@@ -73,7 +75,9 @@ Function startcgminer() {
 
 The $process variable is the path to startmine.bat and $basepath is to the directory where the logs will be placed.
 
-<b>Run without batch file</b><br>
+Run without batch file
+------------------
+
 You can completely omit the batch file if you want, for example:
 
 ```powershell
@@ -97,7 +101,9 @@ Function startcgminer() {
 
 Although can be problematic if cgminer-keep-alive.ps1 isn't in the same folder as cgminer.exe.
 
-<b>Restart server if cgminer process can not be killed</b>
+Restart server if cgminer process can not be killed
+------------------
+
 Sometimes cgminer hangs and can not be killed other than by restarting the computer. Just uncomment  ```Restart-Computer``` in the following section:
 
 ```powershell
@@ -110,14 +116,16 @@ If(killcgminer) { #if killcgminer was successful then start cgminer again
 }
 ```
 
-<b>Configure "bad" words </b>
+Configure "bad" words
+------------------
+
 ```powershell
 $badwords = @('SICK!','DEAD','killing');
 ```
 
 Just add more words to the array. The log checking is caps insensitive. Note that the word can not be a string (contain spaces) as the script reads the log one word at a time (and a word can not contain a space). So for example if you want to check for "HW error" I suggest you just use "error". Support for strings is a planned feature.
 
-Example
+<b>Example</b>
 
 ```powershell
 $badwords = @('SICK!','DEAD','killing','Failure','Error','Another','Set','Of','Words');
@@ -140,9 +148,12 @@ If you already have an instance of cgminer running just point cgminer-keep-alive
 .\cgminer-keep-alive.ps1 -logfile C:\cgminer\logs\cgminer.log
 ```
 
-<b>Start cgminer-keep-alive on system startup</b>
+Start cgminer-keep-alive on system startup
+------------------
 
 The easiest way to start cgminer-keep-alive with Windows is just to create a shortcut to cgminer-keep-alive.ps1 and place it in your Startup folder which is located at: C:\Users\%username%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+If you don't have administrative privileges make sure to include the ```-ExecutionPolicy ByPass``` parameter in the shortcut as described <a href="https://github.com/dbsnurr/cgminer-keep-alive/edit/master/README.md#option-2---administrative-permissions-not-required">here</a>
 
 Known issues
 ==================

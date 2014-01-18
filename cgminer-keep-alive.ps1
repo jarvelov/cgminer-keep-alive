@@ -139,7 +139,7 @@ If(($logfile) -And ($status)) {
 
 log "Starting up cgminer keep alive 0.1!"
 log "Checking for cgminer process and parsing the logfile $logfile every $wait seconds."
-if(!($debug) { log "Add the argument `"-debug $true`" if you want to show debug output." }
+if(!($debug)) { log "Add the argument `"-debug $true`" if you want to show debug output." }
 
 while ($j -eq 0) { #initializing the infinite loop
     $i+=1

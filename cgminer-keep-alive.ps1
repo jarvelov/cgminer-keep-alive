@@ -88,18 +88,26 @@ Function killcgminer($attempt = 0) {
         logdebug "Unable to kill all processes. Discontinuing further attempts to kill the processes"
         $status = $false
     }
-
     return $status
 }
 
 
 Function startcgminer() {
     $process = "C:\cgminer\startmine.bat"
-    $basepath = "C:\cgminer\logs"
+    $logpath = "C:\cgminer\logs"
 
     $datetime = (Get-Date -Format "yyyy-MM-dd_HH-mm")
-    $logfile = "$basepath\$datetime.log"
+    $logfile = "$logpath\$datetime.log"
     $arguments = $logfile
+
+    If(!(Test-Path $logpath)) {
+        logdebug "Directory $logpath does not exist, will create it now"
+        Try {
+            New-Item -ItemType Directory -Path $logpath
+        } Catch {
+            log "Could not create new directory with path $logpath"
+        }
+    }
 
     Try {
         logdebug "Starting new process $process with arguments $arguments"
@@ -169,7 +177,7 @@ while ($j -eq 0) { #initializing the infinite loop
                         log "New cgminer process started, changing to new logfile $logfile"
                     } else {
                         log "Could not restart cgminer. Restarting server..."
-                        Restart-Computer -Force #the processes could not be killed, restarting server
+                        #Restart-Computer -Force #the processes could not be killed, restarting server
                     }
                 }
             } else {

@@ -153,7 +153,7 @@ Start cgminer-keep-alive on system startup
 
 The easiest way to start cgminer-keep-alive with Windows is just to create a shortcut to cgminer-keep-alive.ps1 and place it in your Startup folder which is located at: C:\Users\%username%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
 
-If you don't have administrative privileges make sure to include the ```-ExecutionPolicy ByPass``` parameter in the shortcut as described <a href="https://github.com/dbsnurr/cgminer-keep-alive#option-2---administrative-permissions-not-required">here</a>
+If you don't have administrative privileges make sure to include the ```-ExecutionPolicy ByPass``` parameter in the shortcut as described <a href="#option-2---administrative-permissions-not-required">here</a>
 
 Known issues
 ==================

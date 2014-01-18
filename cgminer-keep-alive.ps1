@@ -98,12 +98,13 @@ Function startcgminer() {
     $basepath = "C:\cgminer\logs"
 
     $datetime = (Get-Date -Format "yyyy-MM-dd_HH-mm")
-    $arguments = "$basepath\$datetime.log"
+    $logfile = "$basepath\$datetime.log"
+    $arguments = $logfile
 
     Try {
         logdebug "Starting new process $process with arguments $arguments"
         Start-Process -FilePath $process -ArgumentList $arguments
-        return $arguments #return the new logfile's location to start parsing that file
+        return $logfile #return the new logfile's location to start parsing that file
     } Catch {
         logdebug "Could not start new instance of cgminer."
     }

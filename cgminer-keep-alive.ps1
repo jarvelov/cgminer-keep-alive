@@ -194,7 +194,7 @@ while ($j -eq 0) { #initializing the infinite loop
                     $logfile = startcgminer
                     log "New cgminer process started, changing to new logfile $logfile"
                 } else {
-                    #log "Could not restart cgminer. Restarting server..."
+                    log "Could not restart cgminer. Server in need of reboot..."
                     #Restart-Computer -Force #the processes could not be killed, restarting server
                 }
             }

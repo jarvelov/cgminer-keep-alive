@@ -91,6 +91,16 @@ Function killcgminer($attempt = 0) {
     return $status
 }
 
+Function restartcgminer() {
+    If(killcgminer) { #if killcgminer was successful then start cgminer again
+        $loglength = $null
+        $logfile = startcgminer
+        log "New cgminer process started, changing to new logfile $logfile"
+    } else {
+        log "Could not restart cgminer. Server in need of reboot..."
+        Restart-Computer -Force #the processes could not be killed, restarting server
+    }
+}
 
 Function startcgminer() {
     $process = "C:\cgminer\startmine.bat"
@@ -171,14 +181,7 @@ while ($j -eq 0) { #initializing the infinite loop
                     $loglength = $content.count
                 } else {
                     logdebug "Log is smaller $($content.count) or equal to last round $loglength. Trying to restart cgminer."
-                    If(killcgminer) { #if killcgminer was successful then start cgminer again
-                        $loglength = $null
-                        $logfile = startcgminer
-                        log "New cgminer process started, changing to new logfile $logfile"
-                    } else {
-                        log "Could not restart cgminer. Restarting server..."
-                        #Restart-Computer -Force #the processes could not be killed, restarting server
-                    }
+                    restartcgminer
                 }
             } else {
                 $loglength = $content.count
@@ -195,17 +198,10 @@ while ($j -eq 0) { #initializing the infinite loop
     #Read the logfile and parse the content
     Foreach ($row in $content) {
         $rowwords = $row -Split "\s+"
-        Foreach ($badword in $rowwords) {#checking if a word in the log matches one in the $badwords array
+        Foreach ($badword in $rowwords) { #checking if a word in the log matches one in the $badwords array
             If($badwords -contains $badword) { 
                 logdebug "Detected a bad word in log $logfile. The bad word is: $badword"
-                If(killcgminer) { #if killcgminer was successful then start cgminer again
-                    $loglength = $null
-                    $logfile = startcgminer
-                    log "New cgminer process started, changing to new logfile $logfile"
-                } else {
-                    log "Could not restart cgminer. Server in need of reboot..."
-                    #Restart-Computer -Force #the processes could not be killed, restarting server
-                }
+                restartcgminer
             }
         }
     }

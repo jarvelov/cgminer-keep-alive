@@ -30,6 +30,7 @@ param (
 Function log($output) {
     $timestamp = (Get-Date -Format "yyyy-MM-dd_HH:mm:ss") 
     Write-Host "$timestamp $output"
+    Add-Content -Path ".\cgminer-keep-alive.log" -Value "$timestamp $output"
 }
 
 Function logdebug($output) {
@@ -47,59 +48,62 @@ Function processinstances($process) {
 }
 
 Function killprocess($process) {
-    logdebug "Attempting to kill process $process"
-    Stop-Process -Name $process -Force -Confirm:$false
+    Try {
+        logdebug "Attempting to kill process $process"
+        Stop-Process -Name $process -Force -Confirm:$false
+        return $true
+    } Catch {
+        logdebug "Could not terminate process $process"
+    }
 }
 
 Function killcgminer($attempt = 0) {
     $max = 10
     $wait = 3
+    $status = $false #we don't want to give false hope!
     $processes = @('cgminer','WerFault') #processes will be killed in order from left to right
 
     #only retry if less than $max attempts to kill the process have been made 
     If($attempt -lt $max) {
         #count the number of process instances
-        $numcgminer = processinstances "cgminer" 
 
-        If($numcgminer -ge 1) { #cgminer processes found, killing it
-            Foreach($process in $processes) {
-                killprocess $process
-                Sleep $wait #sleeping between killing processes is optional but recommended
-            }
-
-            If(!($numcgminer -le 0)) {
+        Foreach($process in $processes) {
+            If((processinstances $process) -ge 1) {#cgminer processes found, killing it            
                 $attempt+=1
-                logdebug "Attempt $attempt of $max to kill cgminer"
-                killcgminer $attempt
+                
+                Try { 
+                    killprocess $process
+                    Sleep $wait #sleeping between killing processes is optional but recommended
+                    logdebug "Attempt $attempt of $max to kill cgminer"
+                } Catch {
+                    logdebug "Could not terminate process $process. Attempt $attempt of $max"
+                    killcgminer $attempt
+                }
             } else {
-                logdebug "Successfully killed all cgminer processes"
-                return $true
+                logdebug "No cgminer processes are currently running. Nothing to kill"
+                $status = $true #no processes were running in the first place
             }
-        } else {
-            logdebug "No cgminer processes are currently running. Nothing to kill"
-            return $true #no processes were running in the first place
-        }
-
-        #count the number of process instances again
-        $numcgminer = processinstances "cgminer" 
+        } 
     } else {
         logdebug "Unable to kill all processes. Discontinuing further attempts to kill the processes"
-        return $false #return false, processes cannot be killed
+        $status = $false
     }
+
+    return $status
 }
+
 
 Function startcgminer() {
     $process = "C:\cgminer\startmine.bat"
     $basepath = "C:\cgminer\logs"
 
     $datetime = (Get-Date -Format "yyyy-MM-dd_HH-mm")
-    $logfile = "$basepath\$datetime.log"
-    $arguments = $logfile #pass a new logfile as an argument
+    $arguments = "$basepath\$datetime.log"
 
     Try {
         logdebug "Starting new process $process with arguments $arguments"
         Start-Process -FilePath $process -ArgumentList $arguments
-        return $logfile #return the new logfile's location to start parsing that file
+        return $arguments #return the new logfile's location to start parsing that file
     } Catch {
         logdebug "Could not start new instance of cgminer."
     }
@@ -117,6 +121,7 @@ Function cgmineralive() {
     }
 }
 
+$loglength = $null
 $badwords = @('SICK!','DEAD','killing'); #add more words if you want!
 $wait = 30
 $j = 0
@@ -134,9 +139,9 @@ If(($logfile) -And ($status)) {
 
 log "Starting up cgminer keep alive 0.1!"
 log "Checking for cgminer process and parsing the logfile $logfile every $wait seconds."
-log "Add the argument `"-debug $true`" if you want to show debug output."
+if(!($debug) { log "Add the argument `"-debug $true`" if you want to show debug output." }
 
-while ($j -eq 0) { #initializing the infinte loop
+while ($j -eq 0) { #initializing the infinite loop
     $i+=1
     logdebug "$i cycles since start"
     logdebug "Parsing log $logfile"
@@ -151,8 +156,28 @@ while ($j -eq 0) { #initializing the infinte loop
         $isalive = cgmineralive
         if($isalive) {
             logdebug "cgminer is currently running"
+            if($loglength -ne $null) {
+                if ($loglength -lt $content.count) {
+                    logdebug "Log is larger $($content.count) than last time $loglength. All seems well."
+                    $loglength = $content.count
+                } else {
+                    logdebug "Log is smaller $($content.count) or equal to last round $loglength. Trying to restart cgminer."
+                    If(killcgminer) { #if killcgminer was successful then start cgminer again
+                        $loglength = $null
+                        $logfile = startcgminer
+                        log "New cgminer process started, changing to new logfile $logfile"
+                    } else {
+                        log "Could not restart cgminer. Restarting server..."
+                        Restart-Computer -Force #the processes could not be killed, restarting server
+                    }
+                }
+            } else {
+                $loglength = $content.count
+                logdebug "log length is 0, program probably just started, assigning new value."
+            }
         } else {
             logdebug "No instances of cgminer was found. Starting up cgminer now."
+            $loglength = $null
             $logfile = startcgminer
             log "New cgminer process started, changing to new logfile $logfile"
         }
@@ -165,11 +190,12 @@ while ($j -eq 0) { #initializing the infinte loop
             If($badwords -contains $badword) { 
                 logdebug "Detected a bad word in log $logfile. The bad word is: $badword"
                 If(killcgminer) { #if killcgminer was successful then start cgminer again
+                    $loglength = $null
                     $logfile = startcgminer
                     log "New cgminer process started, changing to new logfile $logfile"
                 } else {
-                    log "Could not restart cgminer. Server in need of reboot..." 
-                    #Restart-Computer -Force #the processes could not be killed, restarting server
+                    log "Could not restart cgminer. Restarting server..."
+                    Restart-Computer -Force #the processes could not be killed, restarting server
                 }
             }
         }

@@ -67,13 +67,13 @@ If you didn't want to keep cgminer-keep-alive in C:\cgminer you have to edit the
 ```powershell
 Function startcgminer() {
     $process = "C:\cgminer\startmine.bat"
-    $basepath = "C:\cgminer\logs"
+    $logpath = "C:\cgminer\logs"
     
     ...
 }
 ```
 
-The $process variable is the path to startmine.bat and $basepath is to the directory where the logs will be placed.
+The $process variable is the path to startmine.bat and $logpath is to the directory where the logs will be placed. If the logs directory does not exist yet the script will attempt to create it.
 
 Run without batch file
 ------------------
@@ -104,16 +104,16 @@ Although can be problematic if cgminer-keep-alive.ps1 isn't in the same folder a
 Restart server if cgminer process can not be killed
 ------------------
 
-Sometimes cgminer hangs and can not be killed other than by restarting the computer. Just uncomment  ```Restart-Computer``` in the following section:
+Sometimes cgminer hangs and can not be killed other than by restarting the computer. Just uncomment  ```Restart-Computer``` in the following sections:
 
 ```powershell
-If(killcgminer) { #if killcgminer was successful then start cgminer again
-        $logfile = startcgminer
-        log "New cgminer process started, changing to new logfile $logfile"
+Function restartcgminer() {
+    If(killcgminer) { #if killcgminer was successful then start cgminer again
+        ...
     } else {
         log "Could not restart cgminer. Server in need of reboot..."
         #Restart-Computer -Force #the processes could not be killed, restarting server
-}
+    }
 ```
 
 Configure "bad" words

@@ -108,7 +108,7 @@ Sometimes cgminer hangs and can not be killed other than by restarting the compu
 
 ```powershell
 If(killcgminer) { #if killcgminer was successful then start cgminer again
-    $logfile = startcgminer
+        $logfile = startcgminer
         log "New cgminer process started, changing to new logfile $logfile"
     } else {
         log "Could not restart cgminer. Server in need of reboot..."
@@ -158,10 +158,11 @@ If you don't have administrative privileges make sure to include the ```-Executi
 Known issues
 ==================
 * The debug mode's log outputs to the current directory, it must be writeable or multiple error messages will be thrown.
-* WerFault.exe and cmd.exe sometimes don't close when cgminer is killed (or close too quickly and an error that the process couldn't be found is thrown) - This can be ignored as the script will catch them next time around.
+* ~~WerFault.exe and cmd.exe sometimes don't close when cgminer is killed (or close too quickly and an error that the process couldn't be found is thrown) - This can be ignored as the script will catch them next time around.~~ Fixed 2014-01-18
 
 Planned features
 ==================
+* Simple statistics - number of cgminer/server restarts, cgminer/server uptime, longest/average run time etc.
 * Support for multiple cgminer instances
 * Support for checking against strings instead of words
 * Optionally send an email when cgminer crasches.

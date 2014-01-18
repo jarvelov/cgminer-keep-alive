@@ -93,8 +93,8 @@ Function killcgminer($attempt = 0) {
 
 Function restartcgminer() {
     If(killcgminer) { #if killcgminer was successful then start cgminer again
-        $loglength = $null
-        $logfile = startcgminer
+        $global:loglength = $null
+        $global:logfile = startcgminer
         log "New cgminer process started, changing to new logfile $logfile"
     } else {
         log "Could not restart cgminer. Server in need of reboot..."

@@ -93,9 +93,9 @@ Function killcgminer($attempt = 0) {
 
 Function restartcgminer() {
     If(killcgminer) { #if killcgminer was successful then start cgminer again
-        $global:loglength = $null
-        $global:logfile = startcgminer
+        $logfile = startcgminer
         log "New cgminer process started, changing to new logfile $logfile"
+        return $logfile
     } else {
         log "Could not restart cgminer. Server in need of reboot..."
         Restart-Computer -Force #the processes could not be killed, restarting server
@@ -181,7 +181,8 @@ while ($j -eq 0) { #initializing the infinite loop
                     $loglength = $content.count
                 } else {
                     logdebug "Log is smaller $($content.count) or equal to last round $loglength. Trying to restart cgminer."
-                    restartcgminer
+                    $logfile = restartcgminer
+                    $loglength = $null
                 }
             } else {
                 $loglength = $content.count
@@ -202,6 +203,8 @@ while ($j -eq 0) { #initializing the infinite loop
             If($badwords -contains $badword) { 
                 logdebug "Detected a bad word in log $logfile. The bad word is: $badword"
                 restartcgminer
+                $logfile = restartcgminer
+                $loglength = $null
             }
         }
     }
